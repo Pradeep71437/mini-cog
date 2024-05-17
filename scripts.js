@@ -1,8 +1,8 @@
 const fruitWords = [
-    "apple", "banana", "cherry", "date", "fig", "grape", 
+    "apple", "banana", "cherry", "date", "peach", "grape", 
     "kiwi", "lemon", "mango", "orange", "pear", "plum", 
-    "quince", "raspberry", "strawberry", "tangerine", 
-    "ugli", "voavanga", "watermelon", "xigua", "yumberry", "zucchini"
+    "jackfruit", "raspberry", "strawberry", "pumpkin", 
+    "lychee", "avacado", "watermelon", "papaya", "yumberry", "pomegranate"
 ];
 
 const otherWords = [
