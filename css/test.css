@@ -110,11 +110,29 @@ padding: 5px 15px;
     align-items: center;
     justify-content: center;
 }
-@media only screen and (max-width: 768px) {
-    .proceed-button{
 
+.detail-box h1 {
+    font-size: 80px;
+}
+
+/* Adjust font size for medium screens */
+@media (max-width: 1200px) {
+    .detail-box h1 {
+        font-size: 60px;
     }
-  }
+}
+@media (max-width: 768px) {
+    .detail-box h1 {
+        font-size: 40px;
+    }
+}
+
+/* Adjust font size for extra small screens */
+@media (max-width: 480px) {
+    .detail-box h1 {
+        font-size: 10px;
+    }
+}
 
 #fruit-inputs input{
 

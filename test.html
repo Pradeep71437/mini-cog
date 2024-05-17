@@ -108,7 +108,10 @@
       <div id="video-display" class="hidden text-center mt-5">
           <h2 style="font-weight: 700;">Watch this video and memorize the words for  1 minute:</h2>
           <div id="video-timer"></div>
+          <div class="container mt-5" id="video-container">
           <!-- Include your video here -->
+          <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/G267g0DpCVg?si=Lb-uwST8yJ_whsP-&autoplay=1&controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+        </div>
       </div>
 <div class="pr">
       <button id="proceed-button" class="hidden proceed-button" onclick="showFruitInputBoxes()">Proceed To The Test</button>
@@ -155,13 +158,16 @@
               <!-- </tbody> -->
           </table>
         </div>
-          <button onclick="resetTest()">Try Again</button>
+          <button ><a href="test.html" style="color: white;">Try Again</a></button>
           <button onclick="downloadPDF()">Download PDF</button>
       </div>
   </div>
 
 
+<script>
+  
 
+</script>
 
 
 
@@ -196,32 +202,6 @@
 </body>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- <!-- <div id="user-info" >
-          <h2 style="font-weight: 700;" class="text-center mt-5">Please enter your information</h2>
-          <form id="user-form" class="container">
-              <h5>Enter Your Name:</h5>
-              <input type="text" id="name" name="name" placeholder="Your Name" required><br>
-              <h5>Enter Your Age:</h5>
-              <input type="number" id="age" name="age" placeholder="Your Age" required><br>
-              <h5>Any cognitive impairment?</h5>
-              <input type="text" id="cognitive" name="cognitive" placeholder="Type or leave blank"><br>
-              <button type="submit" class="stbtn">Start Test</button>
-          </form>
-      </div> -->
 
 </html>
 

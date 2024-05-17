@@ -36,9 +36,34 @@ function startMemoryTest() {
     startTimer(30, document.getElementById('timer'), () => {
         document.getElementById('word-display').classList.add('hidden');
         document.getElementById('video-display').classList.remove('hidden');
+        document.getElementById("word-display").classList.add("hidden");
+        document.getElementById("video-display").classList.remove("hidden");
+    
+        const videoContainer = document.getElementById("video-container");
+        const iframe = document.createElement("iframe");
+        iframe.setAttribute("width", "560");
+        iframe.setAttribute("height", "315");
+        iframe.setAttribute("src", "https://www.youtube.com/embed/G267g0DpCVg?si=Lb-uwST8yJ_whsP-&autoplay=1&controls=0");
+        iframe.setAttribute("title", "YouTube video player");
+        iframe.setAttribute("frameborder", "0");
+        iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+        iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+        iframe.setAttribute("allowfullscreen", "");
+        videoContainer.appendChild(iframe);
+    
+        let videoTimeLeft = 60;
+        const videoTimer = setInterval(function () {
+            document.getElementById("video-timer").textContent = `Video time left: ${videoTimeLeft} seconds`;
+            videoTimeLeft--;
+            if (videoTimeLeft < 0) {
+                clearInterval(videoTimer);
+                showFruitInputBoxes();
+            }
+        }, 1000);
+        
         startTimer(60, document.getElementById('video-timer'), () => {
             document.getElementById('video-display').classList.add('hidden');
-            document.getElementById('proceed-button').classList.remove('hidden');
+            showFruitInputBoxes();
         });
     });
 }
@@ -62,11 +87,21 @@ function getRandomWords() {
     const shuffledFruits = fruitWords.sort(() => 0.5 - Math.random()).slice(0, 3);
     const availableWords = otherWords.filter(word => !fruitWords.includes(word));
     const shuffledOthers = availableWords.sort(() => 0.5 - Math.random()).slice(0, 7);
-    return shuffledFruits.concat(shuffledOthers);
+
+    const combinedWords = shuffledFruits.concat(shuffledOthers);
+    return shuffleArray(combinedWords);
 }
 
 function getFruitWords(words) {
     return words.filter(word => fruitWords.includes(word));
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
 function showFruitInputBoxes() {
@@ -75,7 +110,6 @@ function showFruitInputBoxes() {
     console.log("fruitInputs:", fruitInputs);
     fruitInputs.classList.remove('hidden');
     document.getElementById('fruit-display').classList.remove('hidden'); // Ensure the parent div is also visible
-    document.getElementById('proceed-button').classList.add('hidden'); // Hide the proceed button
 }
 
 function checkFruitAnswers() {
@@ -96,16 +130,16 @@ function checkFruitAnswers() {
     document.getElementById('result-display').classList.remove('hidden');
 }
 
-function resetTest() {
-    document.getElementById('user-info').classList.remove('hidden');
-    document.getElementById('description').classList.remove('hidden');
-    document.getElementById('word-display').classList.add('hidden');
-    document.getElementById('video-display').classList.add('hidden');
-    document.getElementById('fruit-inputs').classList.add('hidden'); // Hide input boxes on reset
-    document.getElementById('proceed-button').classList.add('hidden');
-    document.getElementById('result-display').classList.add('hidden');
-    document.getElementById('user-form').reset();
-}
+// function resetTest() {
+//     document.getElementById('user-info').classList.remove('hidden');
+//     document.getElementById('description').classList.remove('hidden');
+//     document.getElementById('word-display').classList.add('hidden');
+//     document.getElementById('video-display').classList.add('hidden');
+//     document.getElementById('fruit-display').classList.add('hidden');
+//     document.getElementById('fruit-inputs').classList.add('hidden');
+//     document.getElementById('result-display').classList.add('hidden');
+//     document.getElementById('user-form').reset();
+// }
 
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
