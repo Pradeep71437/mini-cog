@@ -2,7 +2,7 @@ const fruitWords = [
     "apple", "banana", "cherry", "date", "peach", "grape", 
     "kiwi", "lemon", "mango", "orange", "pear", "plum", 
     "jackfruit", "raspberry", "strawberry", "pumpkin", 
-    "lychee", "avacado", "watermelon", "papaya", "yumberry", "pomegranate"
+    "lychee", "avocado", "watermelon", "papaya", "yumberry", "pomegranate"
 ];
 
 const otherWords = [
@@ -15,6 +15,8 @@ const otherWords = [
 let selectedWords = [];
 let selectedFruits = [];
 let userInfo = {};
+let roundCounter = 0;
+let scores = [];
 
 document.getElementById('user-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -22,7 +24,6 @@ document.getElementById('user-form').addEventListener('submit', function(event) 
     userInfo.age = document.getElementById('age').value;
     userInfo.cognitive = document.getElementById('cognitive').value || "None";
     document.getElementById('user-info').classList.add('hidden');
-    // document.getElementById('description').classList.add('hidden');
     startMemoryTest();
 });
 
@@ -35,36 +36,28 @@ function startMemoryTest() {
 
     startTimer(30, document.getElementById('timer'), () => {
         document.getElementById('word-display').classList.add('hidden');
-        document.getElementById('video-display').classList.remove('hidden');
-        document.getElementById("word-display").classList.add("hidden");
-        document.getElementById("video-display").classList.remove("hidden");
-    
-        const videoContainer = document.getElementById("video-container");
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("width", "560");
-        iframe.setAttribute("height", "315");
-        iframe.setAttribute("src", "https://www.youtube.com/embed/G267g0DpCVg?si=Lb-uwST8yJ_whsP-&autoplay=1&controls=0");
-        iframe.setAttribute("title", "YouTube video player");
-        iframe.setAttribute("frameborder", "0");
-        iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
-        iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-        iframe.setAttribute("allowfullscreen", "");
-        videoContainer.appendChild(iframe);
-    
-        let videoTimeLeft = 60;
-        const videoTimer = setInterval(function () {
-            document.getElementById("video-timer").textContent = `Video time left: ${videoTimeLeft} seconds`;
-            videoTimeLeft--;
-            if (videoTimeLeft < 0) {
-                clearInterval(videoTimer);
-                showFruitInputBoxes();
-            }
-        }, 1000);
-        
-        startTimer(60, document.getElementById('video-timer'), () => {
-            document.getElementById('video-display').classList.add('hidden');
-            showFruitInputBoxes();
-        });
+        showVideo();
+    });
+}
+
+function showVideo() {
+    document.getElementById('video-display').classList.remove('hidden');
+    const videoContainer = document.getElementById("video-container");
+    videoContainer.innerHTML = '';
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("width", "560");
+    iframe.setAttribute("height", "315");
+    iframe.setAttribute("src", "https://www.youtube.com/embed/G267g0DpCVg?autoplay=1&controls=0");
+    iframe.setAttribute("title", "YouTube video player");
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+    iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    iframe.setAttribute("allowfullscreen", "");
+    videoContainer.appendChild(iframe);
+
+    startTimer(60, document.getElementById('video-timer'), () => {
+        document.getElementById('video-display').classList.add('hidden');
+        showFruitInputBoxes();
     });
 }
 
@@ -105,15 +98,16 @@ function shuffleArray(array) {
 }
 
 function showFruitInputBoxes() {
-    console.log("Showing fruit input boxes");
     const fruitInputs = document.getElementById('fruit-inputs');
-    console.log("fruitInputs:", fruitInputs);
+    const inputs = fruitInputs.getElementsByClassName('fruit-input');
+    for (let input of inputs) {
+        input.value = ''; // Clear previous inputs
+    }
     fruitInputs.classList.remove('hidden');
-    document.getElementById('fruit-display').classList.remove('hidden'); // Ensure the parent div is also visible
+    document.getElementById('fruit-display').classList.remove('hidden');
 }
 
 function checkFruitAnswers() {
-    console.log("Checking fruit answers");
     const userFruits = Array.from(document.getElementsByClassName('fruit-input')).map(input => input.value.trim().toLowerCase());
     let score = 0;
     selectedFruits.forEach(fruit => {
@@ -121,33 +115,45 @@ function checkFruitAnswers() {
             score++;
         }
     });
+    scores.push(score);
+    roundCounter++;
+    
+    if (roundCounter < 3) {
+        resetTest();
+    } else {
+        displayFinalResult();
+    }
+}
+
+function resetTest() {
+    document.getElementById('fruit-display').classList.add('hidden');
+    document.getElementById('fruit-inputs').classList.add('hidden');
+    startMemoryTest();
+}
+
+function displayFinalResult() {
+    const totalScore = scores.reduce((acc, score) => acc + score, 0);
+    const averageScore = ((totalScore / (3 * selectedFruits.length)) * 10).toFixed(2); // Average out of 10
+
     document.getElementById('result-name').textContent = userInfo.name;
     document.getElementById('result-age').textContent = userInfo.age;
     document.getElementById('result-cognitive').textContent = userInfo.cognitive;
-    document.getElementById('result-score').textContent = score;
+    document.getElementById('result-score').textContent = `Average Score: ${averageScore}/10`;
 
     document.getElementById('fruit-display').classList.add('hidden');
     document.getElementById('result-display').classList.remove('hidden');
 }
 
-// function resetTest() {
-//     document.getElementById('user-info').classList.remove('hidden');
-//     document.getElementById('description').classList.remove('hidden');
-//     document.getElementById('word-display').classList.add('hidden');
-//     document.getElementById('video-display').classList.add('hidden');
-//     document.getElementById('fruit-display').classList.add('hidden');
-//     document.getElementById('fruit-inputs').classList.add('hidden');
-//     document.getElementById('result-display').classList.add('hidden');
-//     document.getElementById('user-form').reset();
-// }
-
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+    const totalScore = scores.reduce((acc, score) => acc + score, 0);
+    const averageScore = ((totalScore / (3 * selectedFruits.length)) * 10).toFixed(2);
+    
     doc.text("Mini Cog Test Results", 10, 10);
     doc.autoTable({
-        head: [['Name', 'Age', 'Cognitive Impairment', 'Score']],
-        body: [[userInfo.name, userInfo.age, userInfo.cognitive, document.getElementById('result-score').textContent]],
+        head: [['Name', 'Age', 'Cognitive Impairment', 'Average Score']],
+        body: [[userInfo.name, userInfo.age, userInfo.cognitive, averageScore]],
     });
     doc.save("Mini_Cog_Test_Results.pdf");
 }
